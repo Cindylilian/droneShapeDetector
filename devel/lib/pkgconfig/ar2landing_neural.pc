@@ -1,0 +1,8 @@
+prefix=/home/cindy/tum_simulator_ws/devel
+
+Name: ar2landing_neural
+Description: Description of ar2landing_neural
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/cindy/tum_simulator_ws/devel/lib 
+Requires: 

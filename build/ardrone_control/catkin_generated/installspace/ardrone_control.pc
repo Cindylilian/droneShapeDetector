@@ -1,0 +1,8 @@
+prefix=/home/cindy/tum_simulator_ws/install
+
+Name: ardrone_control
+Description: Description of ardrone_control
+Version: 1.0.0
+Cflags: 
+Libs: -L/home/cindy/tum_simulator_ws/install/lib 
+Requires: 

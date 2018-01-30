@@ -1,0 +1,434 @@
+#include <ros/ros.h>
+#include <image_transport/image_transport.h>
+#include <sensor_msgs/image_encodings.h>
+#include <image_transport/image_transport.h>
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <std_msgs/Empty.h>
+#include <std_srvs/Empty.h>
+#include "std_msgs/Int32.h"
+#include "std_msgs/Float32.h"
+#include <geometry_msgs/Twist.h>
+#include "ardrone_autonomy/Navdata.h"
+#include <geometry_msgs/Vector3.h>
+#include <termios.h>
+#include <cv.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <math.h>
+#include <string>
+#include <algorithm>
+
+
+using namespace std;
+using namespace cv;
+
+static const char WINDOW[]="RGB Image";
+static const char WINDOW2[]="Gray Image";
+
+    geometry_msgs::Twist twist_msg;
+    geometry_msgs::Twist hover;
+    geometry_msgs::Twist maju;
+    geometry_msgs::Twist mundur;
+    geometry_msgs::Twist rotasika;
+    geometry_msgs::Twist rotasiki;
+    geometry_msgs::Twist geserka;
+    geometry_msgs::Twist geserki;
+    geometry_msgs::Twist naik;
+    geometry_msgs::Twist turun;
+    std_msgs::Empty msg;
+
+
+static struct termios initial_settings, new_settings;
+static int peek_character = -1;
+
+ardrone_autonomy::Navdata msg_in;
+int drone_altd;
+float battery;
+
+bool otomatis = false;
+bool baterai = false;
+unsigned int konturAtas;
+unsigned int konturObjek=0;
+float konturPersen;
+double waktu1, waktu2;
+char command =' ';
+
+void process(const sensor_msgs::ImageConstPtr& cam_image){
+	
+	Mat img_rgb;
+    Mat img_gray;
+    
+	
+	 cv_bridge::CvImagePtr bridge;
+	 bridge = cv_bridge::toCvCopy(cam_image, sensor_msgs::image_encodings::BGR8);
+     img_gray = bridge->image;
+	 resize(img_gray,img_rgb,Size(320,240));
+     Point CoordA;
+    CoordA.x = 0;
+    CoordA.y = 0;
+    
+    
+
+     cvtColor(img_rgb,img_gray,CV_BGR2HSV);
+     
+     Vec3b pix=img_rgb.at<Vec3b>(CoordA.x=160,CoordA.y=120);
+     int Red=img_rgb.at<cv::Vec3b>(CoordA.x=160,CoordA.y=120)[2];
+     int Green=img_rgb.at<cv::Vec3b>(CoordA.x=160,CoordA.y=120)[1];
+     int Blue=img_rgb.at<cv::Vec3b>(CoordA.x=160,CoordA.y=120)[0];
+     int maksimal,minimal, max, min;
+     //char warna[20];
+	 string warna;
+	 
+    double r= (Red*100)/255;
+    double g=(Green*100)/255;
+    double b=(Blue*100)/255;
+    double gminb=g-b;
+    double bminr=b-r;
+    double rming= r-g;
+    double h;
+
+  double besar= std::max(r,std::max(g,b));  
+  double kecil= std::min(r,std::min(g,b));
+    
+    double delta=besar-kecil;
+    
+    //FUNGSI MAX
+    /*
+    if (Red>Green&&Red>Blue){
+		maksimal=Red;
+		max= r;
+	}else if(Green>Red&&Green>Blue){
+		maksimal=Green;
+		max= g;		
+	}else{
+		maksimal=Blue;
+		max=b;
+	}
+	
+	///FUNGSI MIN
+	if (Red<Green&&Red<Blue){
+		minimal=Red;
+		min=r;
+	}else if (Green<Red&&Green<Blue){
+		minimal=Green;
+		min=g;
+	}else{
+		minimal=Blue;
+		min=b;
+		}
+	*/
+	
+	//UJI COBA NILAI H
+	/*
+	if(Red>Green&&Red>Blue){
+		h=(Green-Blue)/(maksimal-minimal);
+	}else if(Green>Red&&Green>Blue){
+		h=120+(Blue-Red)/(maksimal-minimal);
+	}else{
+		h=240+(Red-Green)/(maksimal-minimal);
+	}
+	*/
+	
+	//RUMUS H ISO IKI SEBELUM DIEDIT
+	/*
+	if(r>g&&r>b){
+		h=gminb/(max-min);
+	}else if(g>r&&g>b){
+		h=2+ bminr/(max-min);
+	}else if(b>r&&b>g){
+		h=4+rming/(max-min);
+	}
+	*/
+	if(r>g&&r>b){
+		double bg=(gminb/delta);
+		int kons=6;
+		//int mod=bg%kons;
+		//float h1=mod*100;
+		//h =h1*60;	
+		h=bg*60	;
+	}else if(g>r&&g>b){
+		double h2=(bminr/delta)+2;
+		h=h2*60;
+	}else if(b>r&&b>g){
+		double h3=(rming/delta)+4;
+		h=h3*60;
+	}else if(besar=kecil){
+		h=0;
+		}
+	
+	//float s= ((maksimal-minimal)*100)/maksimal;
+    double s= delta/besar;
+	
+	//RUMUS V SEBELUM DIEDIT	
+	//float v=maksimal*100;
+	float v=besar;
+	
+	float hsv;	
+	if (h<0){
+	hsv = h+360;
+	}
+	else{
+	hsv=h;
+	}
+
+     cout<<Red<<" "<<Green<<" "<<Blue<<" red "<<r<<" green "<<g<<" blue "<<b<<" |max "<<besar<<" min "<<kecil<< "| delta "<<delta<<" hsv"<<h<<" s "<<s*100<<" v "<<v <<" \t\n";
+     
+    //INI RUMUSYANG GAK DIUTEK2
+    // cout<<"max "<<besar<<"  min "<<kecil<<"  RED= "<<Red<<" r "<<r<<"  GREEN="<<Green<<"  BLUE="<<Blue<<"  H="<<h*60 <<" S="<<s/maksimal<<"  V="<<v/255<<" Warna= "<<warna<<" \t\n";
+ 
+   
+
+//----------------------------vertical----------------------------------//
+    line( img_rgb, Point( 107,80 ), Point( 107,160), Scalar( 255, 0, 0),  1, 8 );
+    line( img_rgb, Point( 213,80 ), Point( 213,160), Scalar( 255, 0, 0),  1, 8 );
+    
+    //---------------------------horizontal---------------------------------//
+    line( img_rgb, Point( 107,80 ), Point( 213,80), Scalar( 255, 0, 0),  1, 8 );
+    line( img_rgb, Point( 107,160 ), Point( 213,160), Scalar( 255, 0, 0),  1, 8 );
+    //---------------------------------------------------------------------//
+    
+    //--------------------------lingkaran tengah---------------------------//
+     circle(img_rgb,Point(160,120),5,Scalar(0, 0, 255),-1,8,0);
+    //---------------------------------------------------------------------//
+
+   imshow(WINDOW,img_rgb);
+   //imshow(WINDOW2,img_gray);
+   cvWaitKey(1);
+}
+
+
+void dataNavigasi(const ardrone_autonomy::Navdata& msg_in)
+{
+    drone_altd = msg_in.altd;
+    battery = msg_in.batteryPercent;
+}
+
+void init_keyboard()
+{
+    tcgetattr(0,&initial_settings);
+    new_settings = initial_settings;
+    new_settings.c_lflag &= ~ICANON;
+    new_settings.c_lflag &= ~ECHO;
+    new_settings.c_lflag &= ~ISIG;
+    new_settings.c_cc[VMIN] = 1;
+    new_settings.c_cc[VTIME] = 0;
+    tcsetattr(0, TCSANOW, &new_settings);
+}
+
+int kbhit()
+{
+    char ch;
+    int nread;
+
+    if(peek_character != -1)
+        return 1;
+    new_settings.c_cc[VMIN]=0;
+    tcsetattr(0, TCSANOW, &new_settings);
+    nread = read(0,&ch,1);
+    new_settings.c_cc[VMIN]=1;
+    tcsetattr(0, TCSANOW, &new_settings);
+
+    if(nread == 1) {
+        peek_character = ch;
+        return 1;
+    }
+    return 0;
+}
+
+int readch()
+{
+    char ch;
+
+    if(peek_character != -1) {
+        ch = peek_character;
+        peek_character = -1;
+        return ch;
+    }
+    read(0,&ch,1);
+    return ch;
+}
+
+int main(int argc, char **argv){
+  ros::init(argc,argv,"Display_Images");
+  ros::NodeHandle node;
+  ros::Rate loop_rate(50);
+  ros::Subscriber sub_navdata;
+  
+  image_transport::ImageTransport it(node);
+  image_transport::Subscriber image_sub = it.subscribe("/ardrone/image_raw",1,process);
+
+  cv::namedWindow(WINDOW);
+  //cv::namedWindow(WINDOW2);
+
+  cv::destroyWindow(WINDOW);
+  //cv::destroyWindow(WINDOW2);
+  
+  sub_navdata = node.subscribe("/ardrone/navdata",1,dataNavigasi);
+
+  ros::Publisher pub_empty_takeoff;
+  ros::Publisher pub_empty_land;
+  ros::Publisher pub_empty_reset;
+  ros::Publisher pub_twist;  
+  
+  //hover message
+                hover.linear.x=0.0;
+                hover.linear.y=0.0;
+                hover.linear.z=0.0;
+                hover.angular.z=0.0;
+
+    //maju message----------------
+                maju.linear.x=0.1;
+                maju.linear.y=0.0;
+                maju.linear.z=0.0;
+                maju.angular.z=0.0;
+
+    //mundur message
+                mundur.linear.x=-0.1;
+                mundur.linear.y=0.0;
+                mundur.linear.z=0.0;
+                mundur.angular.z=0.0;
+
+    //geser kanan message
+                geserka.linear.x=0.0;
+                geserka.linear.y=-0.1;
+                geserka.linear.z=0.0;
+                geserka.angular.z=0.0;
+
+    //geser kiri message
+                geserki.linear.x=0.0;
+                geserki.linear.y=+0.1;
+                geserki.linear.z=0.0;
+                geserki.angular.z=0.0;
+
+    //rotasi kanan message
+                rotasika.linear.x=0.0;
+                rotasika.linear.y=0.0;
+                rotasika.linear.z=0.0;
+                rotasika.angular.z=-0.2;
+
+    //rotasi kiri message
+                rotasiki.linear.x=0.0;
+                rotasiki.linear.y=0.0;
+                rotasiki.linear.z=0.0;
+                rotasiki.angular.z=+0.2;
+
+    //naik message
+                naik.linear.x=0.0;
+                naik.linear.y=0.0;
+                naik.linear.z=+0.2;
+                naik.angular.z=0.0;
+
+    //turun message
+                turun.linear.x=0.0;
+                turun.linear.y=0.0;
+                turun.linear.z=-0.2;
+                turun.angular.z=0.0;
+
+    pub_twist         = node.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
+    pub_empty_takeoff = node.advertise<std_msgs::Empty>("/ardrone/takeoff", 1);
+    pub_empty_land    = node.advertise<std_msgs::Empty>("/ardrone/land", 1);
+    pub_empty_reset   = node.advertise<std_msgs::Empty>("/ardrone/reset", 1);
+
+    cout<<"Map keyboard:\n"
+        <<"w = Maju              t = Take Off\n"
+        <<"s = Mundur            l = Landing\n"
+        <<"a = Geser Kiri        i = Altitude+\n"
+        <<"d = Geser Kanan       k = Altitude-\n"
+        <<"q = Rotasi Kiri       h = Hovering\n"
+        <<"e = Rotasi Kanan      b = Baterai \n";
+        
+  while (ros::ok())
+{
+    init_keyboard();
+    if(kbhit())
+        {
+        command=readch();
+        switch(command)
+        {
+        case 't':
+            pub_empty_takeoff.publish(msg); //launches the drone
+            pub_twist.publish(hover); //drone is flat
+            cout<<"Taking Off"<<endl;
+            command=' ';
+            break;
+
+        case 'l':
+            pub_twist.publish(hover); //drone is flat
+            pub_empty_land.publish(msg); //lands the drone
+            cout<<"Landing"<<endl;
+            exit(0);
+            command = ' ';
+            break;
+
+        case 'h':
+            cout<<"Hovering"<<endl;
+            pub_twist.publish(hover);
+            command = ' ';
+            break;
+
+        case 'w':
+            cout<<"Gerak Maju"<<endl;
+            pub_twist.publish(maju);
+            command=' ';
+            break;
+
+        case 's':
+            cout<<"Gerak Mundur"<<endl;
+            pub_twist.publish(mundur);
+            command = ' ';
+            break;
+
+        case 'd':
+            cout<<"Geser Kanan"<<endl;
+            pub_twist.publish(geserka);
+            command = ' ';
+            break;
+
+        case 'a':
+            cout<<"Geser Kiri"<<endl;
+            pub_twist.publish(geserki);
+            command = ' ';
+            break;
+
+        case 'e':
+            cout<<"Rotasi Kanan"<<endl;
+            pub_twist.publish(rotasika);
+            command = ' ';
+            break;
+
+        case 'q':
+            cout<<"Rotasi Kiri"<<endl;
+            pub_twist.publish(rotasiki);
+            command = ' ';
+            break;
+
+        case 'i':
+            cout<<"Altitude+"<<endl;
+            pub_twist.publish(naik);
+            command = ' ';
+            break;
+
+        case 'k':
+            cout<<"Altitude-"<<endl;
+            pub_twist.publish(turun);
+            command = ' ';
+            break;
+
+        case 'b':
+            if(baterai)baterai=false;
+            else if(!baterai)baterai=true;cout<<"Battery: "<<battery<<endl;
+            command = ' ';
+            break;
+
+        }
+    }
+
+  
+    ros::spinOnce();
+    loop_rate.sleep();
+}
+
+  return 0;
+}

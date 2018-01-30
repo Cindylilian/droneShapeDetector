@@ -1,0 +1,8 @@
+prefix=/home/cindy/tum_simulator_ws/devel
+
+Name: ar2landing_gazebo
+Description: Description of ar2landing_gazebo
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/cindy/tum_simulator_ws/devel/lib 
+Requires: 

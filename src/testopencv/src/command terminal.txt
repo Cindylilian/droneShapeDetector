@@ -1,0 +1,31 @@
+Run :
+cd ~/tum_simulator_ws/
+source devel/setup.bash
+rosrun testopencv testopencv_node 
+
+Compile & Run :
+	cd ~/tum_simulator_ws/
+	source devel/setup.bash
+	catkin_make
+	rosrun testopencv testopencv_node 
+
+Gazebo : 
+cd ~/tum_simulator_ws/
+source devel/setup.bash
+roslaunch ar2landing_gazebo landing_platform.launch
+
+
+kamera bawah
+rosservice call /ardrone/togglecam
+
+
+roslaunch cvg_sim_gazebo ardrone_testworld.launch
+
+Connect drone:
+cd ~/tum_simulator_ws/
+source devel/setup.bash
+roslaunch ardrone_autonomy ardrone.launch
+rosservice call /ardrone/togglecam
+
+
+	

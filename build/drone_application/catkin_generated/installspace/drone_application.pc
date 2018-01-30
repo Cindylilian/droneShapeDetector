@@ -1,0 +1,8 @@
+prefix=/home/cindy/tum_simulator_ws/install
+
+Name: drone_application
+Description: Description of drone_application
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/cindy/tum_simulator_ws/install/lib 
+Requires: 

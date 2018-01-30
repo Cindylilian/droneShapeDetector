@@ -156,31 +156,31 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 	blur( gray, bw, Size(3,3) );
 	cv::Canny(gray, bw, 130, 250, 3);
 
-	namedWindow("Control");
-	 createTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
-	 createTrackbar("HighH", "Control", &iHighH, 179);
+	// namedWindow("Control");
+	//  createTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
+	//  createTrackbar("HighH", "Control", &iHighH, 179);
 
-	 createTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
-	 createTrackbar("HighS", "Control", &iHighS, 255);
+	//  createTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
+	//  createTrackbar("HighS", "Control", &iHighS, 255);
 
-	 createTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
-	 createTrackbar("HighV", "Control", &iHighV, 255);
+	//  createTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
+	//  createTrackbar("HighV", "Control", &iHighV, 255);
 
 
-	  cv::Mat imgHSV;
+	//   cv::Mat imgHSV;
 
-	  cvtColor(src, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
+	//   cvtColor(src, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
 
-	   cv::Mat imgThresholded;
+	//    cv::Mat imgThresholded;
 
-	  inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
-	  //morphological opening (remove small objects from the foreground)
-	  erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-	  dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
+	//   inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
+	//   //morphological opening (remove small objects from the foreground)
+	//   erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+	//   dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
 
-	  //morphological closing (fill small holes in the foreground)
-	  dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
-	  erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+	//   //morphological closing (fill small holes in the foreground)
+	//   dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
+	//   erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
 
 	
 
@@ -349,7 +349,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 	cv::imshow(WINDOW,src);
 	cv::imshow(WINDOW2,dst);
 	cv::imshow(WINDOW3,bw);
-	cv::imshow("Thresholded Image", imgThresholded); //show the thresholded image
+	// cv::imshow("Thresholded Image", imgThresholded); //show the thresholded image
 	cvWaitKey(1);
 }
 
@@ -507,12 +507,12 @@ int main(int argc, char **argv){
 	cv::namedWindow(WINDOW);
 	cv::namedWindow(WINDOW2);
 	cv::namedWindow(WINDOW3);
-	cv::namedWindow("Thresholded Image");
+	// cv::namedWindow("Thresholded Image");
 
 	cv::destroyWindow(WINDOW);
 	cv::destroyWindow(WINDOW2);
 	cv::destroyWindow(WINDOW3);
-	cv::destroyWindow("Thresholded Image");
+	// cv::destroyWindow("Thresholded Image");
 while (ros::ok())
 {
 	

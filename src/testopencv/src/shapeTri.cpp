@@ -308,9 +308,9 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		     } 
 		     //kotak tengah 3
 		     else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >0 && CoordShape.y <80 ) {
-		         command = '7'; //mundur ke bawah jika diatas tengah
+		         command = '7'; //maju ke depan jika diatas tengah
 		     } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >80 && CoordShape.y <160 ) {
-				command = '5';
+				command = '5'; //landing jika koordinat titik tengah objek berada ditengah grid
 				isLanding = true;
 				isTrack = false;
 		     } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >160 && CoordShape.y <240 ) {

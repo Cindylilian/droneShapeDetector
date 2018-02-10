@@ -300,30 +300,70 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		}else if(isTrack){
 			//kotak kiri 3 
 			if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >0 && CoordShape.y <80 ) {
-		         command = '3'; //geser kanan jika kotak kiri atas
+                //geser kanan jika kotak kiri atas
+                char Areas[20];
+                sprintf(Areas,"Geser Kanan");
+                putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+		         command = '3';
 		     } else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >80 && CoordShape.y <160 ) {
-		         command = '3'; //geser kanan jika kotak kiri atas
+                 //geser kanan jika kotak kiri atas
+                 char Areas[20];
+                 sprintf(Areas,"Geser Kanan");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+		         command = '3';
 		     } else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >160 && CoordShape.y <240 ) {
-		         command = '3'; //geser kanan jika kotak kiri atas
+                 //geser kanan jika kotak kiri atas
+                 char Areas[20];
+                 sprintf(Areas,"Geser Kanan");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+		         command = '3';
 		     } 
 		     //kotak tengah 3
 		     else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >0 && CoordShape.y <80 ) {
-		         command = '7'; //maju ke depan jika diatas tengah
+                 //geser kanan jika kotak kiri atas
+                 char Areas[20];
+                 sprintf(Areas,"Maju Depan");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+		         command = '7';
 		     } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >80 && CoordShape.y <160 ) {
-				command = '5'; //landing jika koordinat titik tengah objek berada ditengah grid
+                //landing jika koordinat titik tengah objek berada ditengah grid
+                char Areas[20];
+                sprintf(Areas,"Landing");
+                putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+				command = '5';
 				isLanding = true;
 				isTrack = false;
 		     } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >160 && CoordShape.y <240 ) {
-		         command = '8';  //mundur ke bawah jika dibawah tengah
+                 //mundur ke bawah jika dibawah tengah
+                 char Areas[20];
+                 sprintf(Areas,"Mundur Bawah");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+		         command = '8';
 		     }
 		     //kotak kanan 3
 		     else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >0 && CoordShape.y <80 ) {
-		         command = '4'; //geser kiri jika kotak kiri atas
+                 //geser kiri jika kotak kiri atas
+                 char Areas[20];
+                 sprintf(Areas,"Geser Kiri");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+                 command = '4';
 		     } else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >80 && CoordShape.y <160 ) {
-		         command = '4'; //geser kiri jika kotak kiri tengah
+                 //geser kiri jika kotak kiri tengah
+                 char Areas[20];
+                 sprintf(Areas,"Geser Kiri");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+                 command = '4';
 		     } else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >160 && CoordShape.y <240 ) {
-		         command = '4'; //geser kiri jika kotak kiri bawah
+                 //geser kiri jika kotak kiri tengah
+                 char Areas[20];
+                 sprintf(Areas,"Geser Kiri");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+                 command = '4';
 		     }else{
+                //geser kiri jika kotak kiri tengah
+                char Areas[20];
+                sprintf(Areas,"Hover");
+                putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
 		     	command = '5';
 		     }
 		}

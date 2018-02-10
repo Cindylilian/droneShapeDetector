@@ -360,7 +360,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
                  command = '4';
 		     }else{
-                //geser kiri jika kotak kiri tengah
+                //Hover jika tidak menemui objek
                 char Areas[20];
                 sprintf(Areas,"Hover");
                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);

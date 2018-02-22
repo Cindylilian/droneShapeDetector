@@ -208,8 +208,48 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 					else if (approx.size() >= 4 && approx.size() <= 6)
 					{
 
-						gotShape = false;
-						tipeObjek = "";
+						// Number of vertices of polygonal curve
+						int vtc = approx.size();
+
+						// Get the cosines of all corners
+						std::vector<double> cos;
+						for (int j = 2; j < vtc+1; j++)
+							cos.push_back(angle(approx[j%vtc], approx[j-2], approx[j-1]));
+
+						// Sort ascending the cosine values
+						std::sort(cos.begin(), cos.end());
+
+						// Get the lowest and the highest cosine
+						double mincos = cos.front();
+						double maxcos = cos.back();
+
+						// Use the degrees obtained above and the number of vertices
+						// to determine the shape of the contour
+						if (vtc == 4 ){
+							// setLabel(dst, "RECT", contours[i]);
+							gotShape = false;
+							CoordShape.x = 999;
+							CoordShape.y = 999;
+							tipeObjek = "";
+						}
+						else if (vtc == 5 ){
+							// setLabel(dst, "PENTA", contours[i]);
+							gotShape = false;
+							CoordShape.x = 999;
+							CoordShape.y = 999;
+							tipeObjek = "";
+						}else if (vtc == 6 ){
+							// setLabel(dst, "HEXA", contours[i]);
+							gotShape = false;
+							CoordShape.x = 999;
+							CoordShape.y = 999;
+							tipeObjek = "";
+						}else{
+							gotShape = false;
+							CoordShape.x = 999;
+							CoordShape.y = 999;
+							tipeObjek = "";
+						}
 					}
 					else
 					{
@@ -223,6 +263,8 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 							setLabel(dst, "CIR", contours[i]);
 						else
 							gotShape = false;
+							CoordShape.x = 999;
+							CoordShape.y = 999;
 							tipeObjek = "";
 		}
 	}
@@ -232,10 +274,10 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 	
 	if(otomatis && !isLanding){
 		if(!gotShape && isZigZag){
-			if(droneHeight<100 && !automateHeight){
+			if(droneHeight<135 && !automateHeight){
 			//naik sampai 1 meter
 				command = '1';
-			}else if(droneHeight>100 && !automateHeight){
+			}else if(droneHeight>135 && !automateHeight){
 				//turun sampai 1 meter
 				//command = '2';
 				waktu = ros::Time::now().toSec();
@@ -246,51 +288,52 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 				command = '5';
 				automateHeight = true;
 			}else if(automateHeight){
-				waktu = ros::Time::now().toSec();
-				if (doneGeserKiri && doneGeserKanan && doneMajuKiri && doneMajuKanan){
-					waktu = ros::Time::now().toSec();
-					waktuKiri = waktu+2;
-					waktuMajuKiri = waktu+3;
-					waktuKanan = waktu+5;
-					waktuMajuKanan = waktu+6;
-					doneGeserKiri = false;
-					doneGeserKanan = false;
-					doneMajuKiri = false;
-					doneMajuKanan = false;
-				}
+				command = '4';
+				// waktu = ros::Time::now().toSec();
+				// if (doneGeserKiri && doneGeserKanan && doneMajuKiri && doneMajuKanan){
+				// 	waktu = ros::Time::now().toSec();
+				// 	waktuKiri = waktu+2;
+				// 	waktuMajuKiri = waktu+3;
+				// 	waktuKanan = waktu+5;
+				// 	waktuMajuKanan = waktu+6;
+				// 	doneGeserKiri = false;
+				// 	doneGeserKanan = false;
+				// 	doneMajuKiri = false;
+				// 	doneMajuKanan = false;
+				// }
 				
 				
-				if(waktuKiri > waktu){
-					//geser kiri
-					command = '3';
-				}else if(waktu == waktuKiri){
-					command = '5';
-					doneGeserKiri = true;
-				}
+				// if(waktuKiri > waktu){
+				// 	//geser kiri
+				// 	command = '3';
+				// }else if(waktu == waktuKiri){
+				// 	command = '5';
+				// 	doneGeserKiri = true;
+				// }
 
-				if(waktuMajuKiri > waktu){
-					//maju depan setelah geser kiri
-					command = '5';
-				}else if(waktu == waktuMajuKiri){
-					command = '5';
-					doneMajuKiri = true;
-				}
+				// if(waktuMajuKiri > waktu){
+				// 	//maju depan setelah geser kiri
+				// 	command = '5';
+				// }else if(waktu == waktuMajuKiri){
+				// 	command = '5';
+				// 	doneMajuKiri = true;
+				// }
 
-				if(waktuKanan > waktu && doneMajuKiri){
-					//geser kanan
-					command = '4';
-				}else if(waktu == waktuKanan){
-					command = '5';
-					doneGeserKanan = true;
-				}
+				// if(waktuKanan > waktu && doneMajuKiri){
+				// 	//geser kanan
+				// 	command = '4';
+				// }else if(waktu == waktuKanan){
+				// 	command = '5';
+				// 	doneGeserKanan = true;
+				// }
 
-				if(waktuMajuKanan > waktu && doneGeserKanan){
-					//maju depan setelah geser kiri
-					command = '5';
-				}else if(waktu == waktuMajuKanan){
-					command = '5';
-					doneMajuKanan = true;
-				}
+				// if(waktuMajuKanan > waktu && doneGeserKanan){
+				// 	//maju depan setelah geser kiri
+				// 	command = '5';
+				// }else if(waktu == waktuMajuKanan){
+				// 	command = '5';
+				// 	doneMajuKanan = true;
+				// }
 
 			}	
 		}else if(gotShape && !isTrack){
@@ -359,8 +402,14 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
                  sprintf(Areas,"Geser Kiri");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
                  command = '4';
-		     }else{
+		     }else if (CoordShape.x == 999 && CoordShape.y == 999){
                 //Hover jika tidak menemui objek
+                char Areas[20];
+                sprintf(Areas,"Hover");
+                putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+		     	command = '5';
+		     }else{
+		     	//Hover jika tidak menemui objek
                 char Areas[20];
                 sprintf(Areas,"Hover");
                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);

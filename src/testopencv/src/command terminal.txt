@@ -1,7 +1,7 @@
 Run :
-cd ~/tum_simulator_ws/
-source devel/setup.bash
-rosrun testopencv testopencv_node 
+	cd ~/tum_simulator_ws/
+	source devel/setup.bash
+	rosrun testopencv testopencv_node 
 
 Compile & Run :
 	cd ~/tum_simulator_ws/
@@ -10,22 +10,30 @@ Compile & Run :
 	rosrun testopencv testopencv_node 
 
 Gazebo : 
-cd ~/tum_simulator_ws/
-source devel/setup.bash
-roslaunch ar2landing_gazebo landing_platform.launch
+	cd ~/tum_simulator_ws/
+	source devel/setup.bash
+	roslaunch ar2landing_gazebo landing_platform.launch
 
 
 kamera bawah
-rosservice call /ardrone/togglecam
+	rosservice call /ardrone/togglecam
 
 
-roslaunch cvg_sim_gazebo ardrone_testworld.launch
+	roslaunch cvg_sim_gazebo ardrone_testworld.launch
 
 Connect drone:
-cd ~/tum_simulator_ws/
-source devel/setup.bash
-roslaunch ardrone_autonomy ardrone.launch
-rosservice call /ardrone/togglecam
+	cd ~/tum_simulator_ws/
+	source devel/setup.bash
+	roslaunch ardrone_autonomy ardrone.launch
+	rosservice call /ardrone/togglecam
 
-
+Push :
+	cd ~/tum_simulator_ws/
+	git add .
+	git commit -m "nama update an"
+	git push origin master
 	
+
+Pull:
+	cd ~/tum_simulator_ws/
+	git pull origin master

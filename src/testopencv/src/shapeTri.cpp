@@ -27,10 +27,14 @@ using namespace cv;
 geometry_msgs::Twist hover;
 geometry_msgs::Twist hoverUp;
 geometry_msgs::Twist hoverDown;
-geometry_msgs::Twist hoverLeft;
-geometry_msgs::Twist hoverRight;
-geometry_msgs::Twist hoverForward;
-geometry_msgs::Twist hoverBackward;
+geometry_msgs::Twist trackLeft;
+geometry_msgs::Twist trackRight;
+geometry_msgs::Twist trackForward;
+geometry_msgs::Twist trackBackward;
+geometry_msgs::Twist moveRight;
+geometry_msgs::Twist moveLeft;
+geometry_msgs::Twist moveForward;
+geometry_msgs::Twist moveBackward;
 geometry_msgs::Twist hoverStop;
 geometry_msgs::Twist hoverShape;
 std_msgs::Empty msg;
@@ -58,8 +62,8 @@ bool doneMajuKiri = false;
 bool doneMajuKanan = false;
 
 bool isLanding = false;
+bool isMoving = false;
 bool isTrack = false;
-bool isZigZag = false;
 bool isLandXD = false;
 
 unsigned int konturAtas, konturBawah;
@@ -124,7 +128,6 @@ void setLabel(cv::Mat& im, const std::string label, std::vector<cv::Point>& cont
 	CoordShape.x = r.x + (r.width/ 2);
 	CoordShape.y = r.y + (r.height/ 2);
 	tipeObjek = label;
-	// cout<<"Found a "<<label<<" Shape !\n"<<"Koordinat X Shape : "<< CoordShape.x <<"\nKoordinat Y Shape"<< CoordShape.y <<endl;
 	cv::rectangle(im, pt + cv::Point(0, baseline), pt + cv::Point(text.width, -text.height), CV_RGB(255,255,255), CV_FILLED);
 	cv::putText(im, label, pt, fontface, scale, CV_RGB(0,0,0), thickness, 8);
 }
@@ -175,45 +178,45 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 
 		if (approx.size() == 3 && nomerObjek == 3)//if (approx.size() == 3 && nomerObjek == 3)
 		{
-					setLabel(dst, "TRI", contours[i]);    // Triangles
-					}
-					else if (approx.size() >= 4 && approx.size() <= 6)
-					{
-						// Number of vertices of polygonal curve
-						int vtc = approx.size();
+			setLabel(dst, "TRI", contours[i]);    // Triangles
+		}
+		else if (approx.size() >= 4 && approx.size() <= 6)
+		{
+			// Number of vertices of polygonal curve
+			int vtc = approx.size();
 
-						// Get the cosines of all corners
-						std::vector<double> cos;
-						for (int j = 2; j < vtc+1; j++)
-							cos.push_back(angle(approx[j%vtc], approx[j-2], approx[j-1]));
+			// Get the cosines of all corners
+			std::vector<double> cos;
+			for (int j = 2; j < vtc+1; j++)
+				cos.push_back(angle(approx[j%vtc], approx[j-2], approx[j-1]));
 
-						// Sort ascending the cosine values
-						std::sort(cos.begin(), cos.end());
+			// Sort ascending the cosine values
+			std::sort(cos.begin(), cos.end());
 
-						// Get the lowest and the highest cosine
-						double mincos = cos.front();
-						double maxcos = cos.back();
+			// Get the lowest and the highest cosine
+			double mincos = cos.front();
+			double maxcos = cos.back();
 
-						// Use the degrees obtained above and the number of vertices
-						// to determine the shape of the contour
-						if (vtc == 4 && nomerObjek == 4){//if (vtc == 4 && nomerObjek == 4){
-							setLabel(dst, "RECT", contours[i]);
-						}
-						else if (vtc == 5 && nomerObjek == 5){//else if (vtc == 5 && nomerObjek == 5){
-							setLabel(dst, "PENTA", contours[i]);
-						}else{
-							gotShape = false;
-							CoordShape.x = 999;
-							CoordShape.y = 999;
-							tipeObjek = "";
-						}
-					}
-					else
-					{
-						gotShape = false;
-						CoordShape.x = 999;
-						CoordShape.y = 999;
-						tipeObjek = "";
+			// Use the degrees obtained above and the number of vertices
+			// to determine the shape of the contour
+			if (vtc == 4 && nomerObjek == 4){//if (vtc == 4 && nomerObjek == 4){
+				setLabel(dst, "RECT", contours[i]);
+			}
+			else if (vtc == 5 && nomerObjek == 5){//else if (vtc == 5 && nomerObjek == 5){
+				setLabel(dst, "PENTA", contours[i]);
+			}else{
+				gotShape = false;
+				CoordShape.x = 999;
+				CoordShape.y = 999;
+				tipeObjek = "";
+			}
+		}
+		else
+		{
+			gotShape = false;
+			CoordShape.x = 999;
+			CoordShape.y = 999;
+			tipeObjek = "";
 		}
 	}
 
@@ -221,30 +224,35 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 
 	
 	if(otomatis && !isLanding){
-		if(!gotShape && isZigZag){
-			if(droneHeight<135 && !automateHeight){
-				command = '1';
-			}else if(droneHeight>135 && !automateHeight){
-				command = '5';
-				automateHeight = true;
-			}else if(automateHeight){
-				if (gerakan == "Maju"){
-					command = '7';
-				}else if (gerakan == "Mundur"){
-					command = '8';
-				}else if (gerakan == "Kiri"){
-					command = '4';
-				}else if (gerakan == "Kanan"){
-					command = '3';
-				}
-			}	
+		if(!gotShape && isMoving){
+			if (gerakan == "Maju"){
+				command = '^';
+			}else if (gerakan == "Mundur"){
+				command = 'v';
+			}else if (gerakan == "Kiri"){
+				command = '<';
+			}else if (gerakan == "Kanan"){
+				command = '>';
+			}else if (gerakan == "Naik"){
+				command = '(';
+			}else if (gerakan == "Turun"){
+				command = ')';
+			}
 		}else if(gotShape && !isTrack){
-			command = '5';
-			isZigZag = false;
+			cout<<"Objek telah terdeteksi";
+			isMoving = false;
 			isTrack = true;
 		}else if(isTrack){
-			//kotak kiri 3 
-			if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >0 && CoordShape.y <80 ) {
+			
+			if(!gotShape){
+				//Hover jika tidak menemui objek
+                char Areas[20];
+                sprintf(Areas,"Hover");
+                putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+		     	command = '5';
+			}
+			//kotak kiri 3
+			 else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >0 && CoordShape.y <80 ) {
                 //geser kanan jika kotak kiri atas
                 char Areas[20];
                 sprintf(Areas,"Geser Kanan");
@@ -277,11 +285,11 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
 				command = '5';
 				isLanding = true;
-				isTrack = false;
+				isMoving = false;
 		     } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >160 && CoordShape.y <240 ) {
                  //mundur ke bawah jika dibawah tengah
                  char Areas[20];
-                 sprintf(Areas,"Mundur Bawah");
+                 sprintf(Areas,"Mundur Belakang");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
 		         command = '8';
 		     }
@@ -334,13 +342,12 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 
 
 	if(showData){
-		cout<<"Height : "<<drone_altd/10<<"cm \tPosisi VX : "<<vx<<" \t Posisi VY: "<<vy<<" \t Posisi VZ: "<<vz<<" \t Posisi RotX: "<<rotX<<" \t Posisi RotY: "<<rotY<<" \t Posisi RotZ: "<<rotZ<<endl;
+		cout<<"Height : "<<drone_altd/10<<endl;
 	}
 
 	cv::imshow(WINDOW,src);
 	cv::imshow(WINDOW2,dst);
 	cv::imshow(WINDOW3,bw);
-	// cv::imshow("Thresholded Image", imgThresholded); //show the thresholded image
 	cvWaitKey(1);
 }
 
@@ -419,21 +426,12 @@ int main(int argc, char **argv){
 	image_transport::ImageTransport it(n);
 	image_transport::Subscriber image_sub = it.subscribe("/ardrone/bottom/image_raw",1,process);
 
-
-
 	sub_navdata = node.subscribe("/ardrone/navdata",1,dataNavigasi);
 
     ros::Publisher pub_empty_takeoff;
     ros::Publisher pub_empty_land;
     ros::Publisher pub_empty_reset;
     ros::Publisher pub_twist;
-
-
-    //hover message
-    hover.linear.x=0.0;
-    hover.linear.y=0.0;
-    hover.linear.z=0.0;
-    hover.angular.z=0.0;
 
     hoverStop.linear.x=0.0;
     hoverStop.linear.y=0.0;
@@ -452,29 +450,45 @@ int main(int argc, char **argv){
 	hoverDown.linear.z=-0.05;
 	hoverDown.angular.z=0.0;
 
-	hoverLeft.linear.x=0.0;
-    hoverLeft.linear.y=0.05;
-    hoverLeft.linear.z=0.0;
-	hoverLeft.angular.z=0.0;
+	trackLeft.linear.x=0.0;
+    trackLeft.linear.y=0.05;
+    trackLeft.linear.z=0.0;
+	trackLeft.angular.z=0.0;
 
-	hoverRight.linear.x=0.0;
-    hoverRight.linear.y=-0.05;
-    hoverRight.linear.z=0.0;
-	hoverRight.angular.z=0.0;
+	trackRight.linear.x=0.0;
+    trackRight.linear.y=-0.05;
+    trackRight.linear.z=0.0;
+	trackRight.angular.z=0.0;
 
-	hoverForward.linear.x=0.05;
-	hoverForward.linear.y=0.0;
-	hoverForward.linear.z=0.0;
-	hoverForward.angular.z=0.0;
+	trackForward.linear.x=0.05;
+	trackForward.linear.y=0.0;
+	trackForward.linear.z=0.0;
+	trackForward.angular.z=0.0;
 
-	hoverBackward.linear.x=-0.05;
-	hoverBackward.linear.y=-0.0;
-	hoverBackward.linear.z=0.0;
-	hoverBackward.angular.z=0.0;
+	trackBackward.linear.x=-0.05;
+	trackBackward.linear.y=-0.0;
+	trackBackward.linear.z=0.0;
+	trackBackward.angular.z=0.0;
 
+	moveRight.linear.x=0.0;
+	moveRight.linear.y=-0.1;
+	moveRight.linear.z=0.0;
+	moveRight.angular.z=0.0;
 	
-	zigzagCounter = 0;
-	
+	moveLeft.linear.x=0.0;
+	moveLeft.linear.y=0.1;
+	moveLeft.linear.z=0.0;
+	moveLeft.angular.z=0.0;
+
+	moveForward.linear.x=0.1;
+	moveForward.linear.y=0.0;
+	moveForward.linear.z=0.0;
+	moveForward.angular.z=0.0;
+
+	moveBackward.linear.x=-0.1;
+	moveBackward.linear.y=0.0;
+	moveBackward.linear.z=0.0;
+	moveBackward.angular.z=0.0;
 
     pub_twist         = node.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
     pub_empty_takeoff = node.advertise<std_msgs::Empty>("/ardrone/takeoff", 1);/* Message queue length is just 1 */
@@ -487,6 +501,8 @@ int main(int argc, char **argv){
      	<<"a = Pilih Objek segitiga\n"
      	<<"b = Pilih Objek kotak\n"
      	<<"c = Pilih Objek penta\n"
+        <<"f = Up\n"
+        <<"g = Down\n"
         <<"1 = Maju\n"
         <<"2 = Mundur\n"
         <<"3 = Geser Kiri\n"
@@ -498,101 +514,89 @@ int main(int argc, char **argv){
 	cv::namedWindow(WINDOW);
 	cv::namedWindow(WINDOW2);
 	cv::namedWindow(WINDOW3);
-	// cv::namedWindow("Thresholded Image");
 
 	cv::destroyWindow(WINDOW);
 	cv::destroyWindow(WINDOW2);
 	cv::destroyWindow(WINDOW3);
-	// cv::destroyWindow("Thresholded Image");
 while (ros::ok())
 {
-	
-	
+
     init_keyboard();
     if(kbhit())
         {
         command=readch();
         switch(command)
         {
+        case 'f':
+            cout<<"Altitude+"<<endl;
+            otomatis = true;
+	        gerakan = "Naik";
+        	gotShape = false;
+        	isTrack = false;
+        	isMoving = true;
+            command = '~';
+            break;
+        case 'g':
+            cout<<"Altitude-"<<endl;
+            otomatis = true;
+	        gerakan = "Turun";
+        	gotShape = false;
+        	isTrack = false;
+        	isMoving = true;
+            command = '~';
+            break;    
         case 'a':
+        	cout<<"Objek segitiga akan dideteksi"<<endl;
 			nomerObjek = 3;
-			cout<<"Objek segitiga akan dideteksi";
 			command = '~';
 			break;
 		case 'b':
+			cout<<"Objek kotak akan dideteksi"<<endl;
 			nomerObjek = 4;
-			cout<<"Objek kotak akan dideteksi";
 			command = '~';
 			break;
 		case 'c':
-			nomerObjek = 5;
 			cout<<"Objek penta akan dideteksi";
+			nomerObjek = 5;
 			command = '~';
 			break;    
         case 't':
         	pub_empty_takeoff.publish(msg); //launches the drone
-            pub_twist.publish(hover); //drone fly up
+            pub_twist.publish(hoverStop);
             cout<<"Take Off"<<endl;
             command = '~';
             break;
         case '1':
-            otomatis = !otomatis;
-        	if(otomatis){
-        		pub_empty_takeoff.publish(msg); //launches the drone
-	            pub_twist.publish(hover); //drone fly up
+        	cout<<"Gerakan Maju"<<endl;
+            otomatis = true;
 	            gerakan = "Maju";
-        		automateHeight = false;
         		gotShape = false;
         		isTrack = false;
-        	}else{
-        		isZigZag = false;
-        		pub_twist.publish(hoverStop);
-        	}
-        	command = '~';
+        		isMoving = true;
             break;  
         case '2':
-            otomatis = !otomatis;
-        	if(otomatis){
-        		pub_empty_takeoff.publish(msg); //launches the drone
-	            pub_twist.publish(hover); //drone fly up
+        cout<<"Gerakan Mundur"<<endl;
+            otomatis = true;
 	            gerakan = "Mundur";
-        		automateHeight = false;
         		gotShape = false;
         		isTrack = false;
-        	}else{
-        		isZigZag = false;
-        		pub_twist.publish(hoverStop);
-        	}
-        	command = '~';
+        		isMoving = true;
             break;    
         case '3':
-            otomatis = !otomatis;
-        	if(otomatis){
-        		pub_empty_takeoff.publish(msg); //launches the drone
-	            pub_twist.publish(hover); //drone fly up
+        cout<<"Gerakan Geser Kiri"<<endl;
+            otomatis = true;
 	            gerakan = "Kiri";
-        		automateHeight = false;
         		gotShape = false;
         		isTrack = false;
-        	}else{
-        		isZigZag = false;
-        		pub_twist.publish(hoverStop);
-        	}
-        	command = '~';
+        		isMoving = true;
             break; 
         case '4':
-            otomatis = !otomatis;
-        	if(otomatis){
-        		pub_empty_takeoff.publish(msg); //launches the drone
-	            pub_twist.publish(hover); //drone fly up
+        cout<<"Gerakan Geser kanan"<<endl;
+            otomatis = true;
 	            gerakan = "Kanan";
-        		automateHeight = false;
         		gotShape = false;
         		isTrack = false;
-        	}else{
-        		isZigZag = false;
-        		pub_twist.publish(hoverStop);
-        	}
+        		isMoving = true;
         	command = '~';
             break;                   
 		case 'l':
@@ -605,6 +609,7 @@ while (ros::ok())
         case ' ':
             cout<<"Stop"<<endl;
             pub_twist.publish(hoverStop);
+            otomatis = false;
             command = '~';
             break;
         case 'n':
@@ -629,28 +634,23 @@ while (ros::ok())
     else if(otomatis){
         switch(command)
         {
-    	case '1':
+    	case '(':
             pub_twist.publish(hoverUp); //drone fly up
-            // cout<<"Fly UP"<<endl;
             command = '~';
             break;
-        case '2':
+        case ')':
             pub_twist.publish(hoverDown); //drone fly down
-            // cout<<"Fly Down"<<endl;
             command = '~';
             break; 
         case '3':
-            pub_twist.publish(hoverLeft); //drone fly to left
-            // cout<<"Fly Left"<<endl;
+            pub_twist.publish(trackLeft); //drone fly to left
             command = '~';
             break;
         case '4':
-            pub_twist.publish(hoverRight); //drone fly to right
-            // cout<<"Fly Right"<<endl;
+            pub_twist.publish(trackRight); //drone fly to right
             command = '~';
-            break;
+            break;            
         case '5':
-        	// cout<<"Stop"<<endl;
             pub_twist.publish(hoverStop); //drone stop
             command = '~';
             break;
@@ -663,19 +663,35 @@ while (ros::ok())
             exit(0);
             break;
         case '7':
-            pub_twist.publish(hoverForward); //drone fly forward
+            pub_twist.publish(trackForward); //drone fly forward
             command = '~';
             break;
         case '8':
-            pub_twist.publish(hoverBackward); //drone fly backward
+            pub_twist.publish(trackBackward); //drone fly backward
             command = '~';
-            break;              
+            break;
+        case '>':
+            pub_twist.publish(moveRight); //drone fly to right
+            command = '~';
+            break;
+        case '<':
+            pub_twist.publish(moveLeft); //drone fly to left
+            command = '~';
+            break;
+        case 'v':
+            pub_twist.publish(moveBackward); //drone  move backward
+            command = '~';
+            break;  
+        case '^':
+            pub_twist.publish(moveForward); //drone move forward
+            command = '~';
+            break;                    
         }  
     }
 
     ros::spinOnce();
     loop_rate.sleep();
-}//ros::ok
+}
 
 	return 0;
 }

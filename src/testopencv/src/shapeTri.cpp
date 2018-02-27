@@ -442,50 +442,50 @@ int main(int argc, char **argv){
 
     hoverUp.linear.x=0.0;
 	hoverUp.linear.y=0.0;
-	hoverUp.linear.z=0.05;
+	hoverUp.linear.z=0.1;
 	hoverUp.angular.z=0.0;
 
 	hoverDown.linear.x=0.0;
 	hoverDown.linear.y=0.0;
-	hoverDown.linear.z=-0.05;
+	hoverDown.linear.z=-0.1;
 	hoverDown.angular.z=0.0;
 
 	trackLeft.linear.x=0.0;
-    trackLeft.linear.y=0.05;
+    trackLeft.linear.y=0.02;
     trackLeft.linear.z=0.0;
 	trackLeft.angular.z=0.0;
 
 	trackRight.linear.x=0.0;
-    trackRight.linear.y=-0.05;
+    trackRight.linear.y=-0.02;
     trackRight.linear.z=0.0;
 	trackRight.angular.z=0.0;
 
-	trackForward.linear.x=0.05;
+	trackForward.linear.x=0.02;
 	trackForward.linear.y=0.0;
 	trackForward.linear.z=0.0;
 	trackForward.angular.z=0.0;
 
-	trackBackward.linear.x=-0.05;
+	trackBackward.linear.x=-0.02;
 	trackBackward.linear.y=-0.0;
 	trackBackward.linear.z=0.0;
 	trackBackward.angular.z=0.0;
 
 	moveRight.linear.x=0.0;
-	moveRight.linear.y=-0.1;
+	moveRight.linear.y=-0.03;
 	moveRight.linear.z=0.0;
 	moveRight.angular.z=0.0;
 	
 	moveLeft.linear.x=0.0;
-	moveLeft.linear.y=0.1;
+	moveLeft.linear.y=0.03;
 	moveLeft.linear.z=0.0;
 	moveLeft.angular.z=0.0;
 
-	moveForward.linear.x=0.1;
+	moveForward.linear.x=0.03;
 	moveForward.linear.y=0.0;
 	moveForward.linear.z=0.0;
 	moveForward.angular.z=0.0;
 
-	moveBackward.linear.x=-0.1;
+	moveBackward.linear.x=-0.03;
 	moveBackward.linear.y=0.0;
 	moveBackward.linear.z=0.0;
 	moveBackward.angular.z=0.0;

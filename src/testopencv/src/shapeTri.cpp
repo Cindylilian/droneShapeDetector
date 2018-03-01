@@ -253,27 +253,27 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 			}
 			//kotak kiri 3
 			 else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >0 && CoordShape.y <80 ) {
-                //geser kanan jika kotak kiri atas
+                //geser kiri jika kotak kiri atas
                 char Areas[20];
-                sprintf(Areas,"Geser Kanan");
+                sprintf(Areas,"Geser Kiri");
                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
 		         command = '3';
 		     } else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >80 && CoordShape.y <160 ) {
-                 //geser kanan jika kotak kiri atas
+                 //geser kiri jika kotak kiri tengah
                  char Areas[20];
-                 sprintf(Areas,"Geser Kanan");
+                 sprintf(Areas,"Geser K")iri;
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
 		         command = '3';
 		     } else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >160 && CoordShape.y <240 ) {
-                 //geser kanan jika kotak kiri atas
+                 //geser kiri jika kotak kiri bawah
                  char Areas[20];
-                 sprintf(Areas,"Geser Kanan");
+                 sprintf(Areas,"Geser Kiri");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
 		         command = '3';
 		     } 
 		     //kotak tengah 3
 		     else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >0 && CoordShape.y <80 ) {
-                 //geser kanan jika kotak kiri atas
+                 //maju depan jika kotak tengah atas
                  char Areas[20];
                  sprintf(Areas,"Maju Depan");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
@@ -287,7 +287,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 				isLanding = true;
 				isMoving = false;
 		     } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >160 && CoordShape.y <240 ) {
-                 //mundur ke bawah jika dibawah tengah
+                 //mundur ke belakang jika kotak tengah bawah
                  char Areas[20];
                  sprintf(Areas,"Mundur Belakang");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
@@ -295,21 +295,21 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		     }
 		     //kotak kanan 3
 		     else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >0 && CoordShape.y <80 ) {
-                 //geser kiri jika kotak kiri atas
+                 //geser kanan jika kotak kanan atas
                  char Areas[20];
-                 sprintf(Areas,"Geser Kiri");
+                 sprintf(Areas,"Geser Kanan");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
                  command = '4';
 		     } else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >80 && CoordShape.y <160 ) {
-                 //geser kiri jika kotak kiri tengah
+                 //geser kanan jika kotak kanan tengah
                  char Areas[20];
-                 sprintf(Areas,"Geser Kiri");
+                 sprintf(Areas,"Geser Kanan");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
                  command = '4';
 		     } else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >160 && CoordShape.y <240 ) {
-                 //geser kiri jika kotak kiri tengah
+                 //geser kanan jika kotak kanan bawah
                  char Areas[20];
-                 sprintf(Areas,"Geser Kiri");
+                 sprintf(Areas,"Geser Kanan");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
                  command = '4';
 		     }else if (CoordShape.x == 999 && CoordShape.y == 999){
@@ -451,7 +451,7 @@ int main(int argc, char **argv){
 	hoverDown.angular.z=0.0;
 
 	trackLeft.linear.x=0.0;
-    trackLeft.linear.y=0.02;
+    trackLeft.linear.y=0.02; 
     trackLeft.linear.z=0.0;
 	trackLeft.angular.z=0.0;
 
@@ -480,7 +480,7 @@ int main(int argc, char **argv){
 	moveLeft.linear.z=0.0;
 	moveLeft.angular.z=0.0;
 
-	moveForward.linear.x=0.03;
+	moveForward.linear.x=0.03; 
 	moveForward.linear.y=0.0;
 	moveForward.linear.z=0.0;
 	moveForward.angular.z=0.0;

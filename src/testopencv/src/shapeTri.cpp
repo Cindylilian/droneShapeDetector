@@ -232,92 +232,94 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 			}
 			//kotak kiri 3
 			 else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >0 && CoordShape.y <80 ) {
-                //geser kiri jika kotak kiri atas
-                char Areas[20];
-                sprintf(Areas,"Geser Kiri");
-                putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
-		         command = '3';
-		     } else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >80 && CoordShape.y <160 ) {
+                 //geser kiri jika kotak kiri atas
+                 char Areas[20];
+                 sprintf(Areas,"Geser Kiri");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+                 command = '3';
+             } else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >80 && CoordShape.y <160 ) {
                  //geser kiri jika kotak kiri tengah
                  char Areas[20];
-                 sprintf(Areas,"Geser K")iri;
+                 sprintf(Areas,"Geser Kiri");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
-		         command = '3';
-		     } else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >160 && CoordShape.y <240 ) {
+                 command = '3';
+             } else if (CoordShape.x>0 && CoordShape.x<110 && CoordShape.y >160 && CoordShape.y <240 ) {
                  //geser kiri jika kotak kiri bawah
                  char Areas[20];
                  sprintf(Areas,"Geser Kiri");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
-		         command = '3';
-		     } 
-		     //kotak tengah 3
-		     else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >0 && CoordShape.y <80 ) {
+                 command = '3';
+                 
+             }
+            //kotak tengah 3
+             else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >0 && CoordShape.y <80 ) {
                  //maju depan jika kotak tengah atas
                  char Areas[20];
                  sprintf(Areas,"Maju Depan");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
-		         command = '7';
-		     } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >80 && CoordShape.y <160 ) {
-                //landing jika koordinat titik tengah objek berada ditengah grid
-                char Areas[20];
-                sprintf(Areas,"Landing");
-                putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
-				command = '5';
-				isLanding = true;
-				isMoving = false;
-		     } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >160 && CoordShape.y <240 ) {
+                 command = '7';
+             } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >80 && CoordShape.y <160 ) {
+                 //landing jika koordinat titik tengah objek berada di kotak tengah
+                 char Areas[20];
+                 sprintf(Areas,"Landing");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+                 command = '5';
+                 isLanding = true;
+                 isMoving = false;
+             } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >160 && CoordShape.y <240 ) {
                  //mundur ke belakang jika kotak tengah bawah
                  char Areas[20];
                  sprintf(Areas,"Mundur Belakang");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
-		         command = '8';
-		     }
-		     //kotak kanan 3
-		     else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >0 && CoordShape.y <80 ) {
+                 command = '8';
+             }
+            //kotak kanan 3
+             else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >0 && CoordShape.y <80 ) {
                  //geser kanan jika kotak kanan atas
                  char Areas[20];
                  sprintf(Areas,"Geser Kanan");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
                  command = '4';
-		     } else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >80 && CoordShape.y <160 ) {
+             } else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >80 && CoordShape.y <160 ) {
                  //geser kanan jika kotak kanan tengah
                  char Areas[20];
                  sprintf(Areas,"Geser Kanan");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
                  command = '4';
-		     } else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >160 && CoordShape.y <240 ) {
+             } else if (CoordShape.x>220 && CoordShape.x<330 && CoordShape.y >160 && CoordShape.y <240 ) {
                  //geser kanan jika kotak kanan bawah
                  char Areas[20];
                  sprintf(Areas,"Geser Kanan");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
                  command = '4';
-		     }else if (CoordShape.x == 999 && CoordShape.y == 999){
-                //Hover jika tidak menemui objek
-                char Areas[20];
-                sprintf(Areas,"Hover");
-                putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
-		     	command = '5';
-		     }else{
-		     	//Hover jika tidak menemui objek
-                char Areas[20];
-                sprintf(Areas,"Hover");
-                putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
-		     	command = '5';
-		     }
-		}
-	}else if(isLanding){
-		command = '6';
-		if (tipeObjek != ""){
-			cout<<"Landing pada Objek: "<<tipeObjek<<endl;
-		}
-		isLanding = false;
-	}
+             } else if (CoordShape.x == 999 && CoordShape.y == 999){
+                 //Hover jika tidak menemui objek
+                 char Areas[20];
+                 sprintf(Areas,"Hover");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+                 command = '5';
+                 
+             } else{
+                 //Hover jika tidak menemui objek
+                 char Areas[20];
+                 sprintf(Areas,"Hover");
+                 putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
+                 command = '5';
+             }
+        }
+    } else if(isLanding){
+        command = '6';
+        if (tipeObjek != ""){
+            cout<<"Landing pada Objek: "<<tipeObjek<<endl;
+        }
+        isLanding = false;
+    }
 	//----------------------------vertical----------------------------------//
     line( dst, Point( 110,0 ), Point( 110,240), Scalar( 0, 255, 0),  1, 8 );
     line( dst, Point( 220,0 ), Point( 220,240), Scalar( 0, 255, 0),  1, 8 );
     //---------------------------horizontal---------------------------------//
     line( dst, Point( 0,80 ), Point( 330,80), Scalar( 0, 255, 0),  1, 8 );
-    line( dst, Point( 0,160 ), Point( 330,160), Scalar( 0, 255, 0),  1, 8 );	
+    line( dst, Point( 0,160 ), Point( 330,160), Scalar( 0, 255, 0),  1, 8 );
 
 
 	if(showData){

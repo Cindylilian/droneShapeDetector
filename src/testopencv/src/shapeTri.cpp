@@ -78,6 +78,8 @@ string gerakan;
 static const char WINDOW[]="SRC Image"; 
 static const char WINDOW2[]="DST Image";
 static const char WINDOW3[]="Black White Image";
+static const char WINDOW4[]="Grayscale Image";
+static const char WINDOW5[]="Blur";
 
 /**
  * Helper function to find a cosine of angle between vectors
@@ -120,6 +122,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 	cv::Mat gray;
 	cv::Mat bw;
 	cv::Mat dst;
+    cv::Mat blurimg;
 	std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Point> approx;
 
@@ -138,6 +141,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 
 	// Use Canny instead of threshold to catch squares with gradient shading
 	blur( gray, bw, Size(3,3) );
+    blur( gray, blurimg, Size(3,3) );
 	cv::Canny(gray, bw, 130, 250, 3);
 
 	// Find contours
@@ -314,7 +318,8 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
         }
         isLanding = false;
     }
-	//----------------------------vertical----------------------------------//
+    
+    //----------------------------vertical----------------------------------//
     line( dst, Point( 110,0 ), Point( 110,240), Scalar( 0, 255, 0),  1, 8 );
     line( dst, Point( 220,0 ), Point( 220,240), Scalar( 0, 255, 0),  1, 8 );
     //---------------------------horizontal---------------------------------//
@@ -329,6 +334,8 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 	cv::imshow(WINDOW,src);
 	cv::imshow(WINDOW2,dst);
 	cv::imshow(WINDOW3,bw);
+    cv::imshow(WINDOW4,gray);
+    cv::imshow(WINDOW5,blurimg);
 	cvWaitKey(1);
 }
 
@@ -494,10 +501,14 @@ int main(int argc, char **argv){
 	cv::namedWindow(WINDOW);
 	cv::namedWindow(WINDOW2);
 	cv::namedWindow(WINDOW3);
+    cv::namedWindow(WINDOW4);
+    cv::namedWindow(WINDOW5);
 
 	cv::destroyWindow(WINDOW);
 	cv::destroyWindow(WINDOW2);
 	cv::destroyWindow(WINDOW3);
+    cv::destroyWindow(WINDOW4);
+    cv::destroyWindow(WINDOW5);
 while (ros::ok())
 {
 

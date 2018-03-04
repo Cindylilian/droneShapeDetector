@@ -56,18 +56,10 @@ bool gotShape = false;
 bool otomatis = false;
 bool automateHeight = false;
 
-bool doneGeserKiri = false;
-bool doneGeserKanan = false;
-bool doneMajuKiri = false;
-bool doneMajuKanan = false;
-
 bool isLanding = false;
 bool isMoving = false;
 bool isTrack = false;
-bool isLandXD = false;
 
-unsigned int konturAtas, konturBawah;
-unsigned int konturObjek=0;
 float konturPersen;
 int waktu, waktuKiri, waktuKanan, waktuMajuKiri, waktuMajuKanan;
 int counterPuterKiri = 0;
@@ -86,17 +78,6 @@ string gerakan;
 static const char WINDOW[]="SRC Image"; 
 static const char WINDOW2[]="DST Image";
 static const char WINDOW3[]="Black White Image";
-
- int iLowH = 0;
- int iHighH = 88;
-
- int iLowS = 98; 
- int iHighS = 255;
-
- int iLowV = 0;
- int iHighV = 255;
-
-
 
 /**
  * Helper function to find a cosine of angle between vectors
@@ -135,8 +116,6 @@ void setLabel(cv::Mat& im, const std::string label, std::vector<cv::Point>& cont
 
 void process(const sensor_msgs::ImageConstPtr& cam_image){
 	
-
-	//cv::Mat src = cv::imread("polygon.png");
 	cv::Mat src;
 	cv::Mat gray;
 	cv::Mat bw;
@@ -176,9 +155,9 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
 			continue;
 
-		if (approx.size() == 3 && nomerObjek == 3)//if (approx.size() == 3 && nomerObjek == 3)
+		if (approx.size() == 3 && nomerObjek == 3)
 		{
-			setLabel(dst, "TRI", contours[i]);    // Triangles
+			setLabel(dst, "TRI", contours[i]);    // Segitiga
 		}
 		else if (approx.size() >= 4 && approx.size() <= 6)
 		{
@@ -199,10 +178,10 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 
 			// Use the degrees obtained above and the number of vertices
 			// to determine the shape of the contour
-			if (vtc == 4 && nomerObjek == 4){//if (vtc == 4 && nomerObjek == 4){
+			if (vtc == 4 && nomerObjek == 4){
 				setLabel(dst, "RECT", contours[i]);
 			}
-			else if (vtc == 5 && nomerObjek == 5){//else if (vtc == 5 && nomerObjek == 5){
+			else if (vtc == 5 && nomerObjek == 5){
 				setLabel(dst, "PENTA", contours[i]);
 			}else{
 				gotShape = false;
@@ -423,10 +402,10 @@ int main(int argc, char **argv){
     ros::NodeHandle n;
     ros::Rate loop_rate(50);
     ros::Subscriber sub_navdata;
-	image_transport::ImageTransport it(n);
-	image_transport::Subscriber image_sub = it.subscribe("/ardrone/bottom/image_raw",1,process);
-
-	sub_navdata = node.subscribe("/ardrone/navdata",1,dataNavigasi);
+    image_transport::ImageTransport it(n);
+    image_transport::Subscriber image_sub = it.subscribe("/ardrone/bottom/image_raw",1,process);
+    
+    sub_navdata = node.subscribe("/ardrone/navdata",1,dataNavigasi);
 
     ros::Publisher pub_empty_takeoff;
     ros::Publisher pub_empty_land;
@@ -437,59 +416,58 @@ int main(int argc, char **argv){
     hoverStop.linear.y=0.0;
     hoverStop.linear.z=0.0;
     hoverStop.angular.x=0.0;
-	hoverStop.angular.y=0.0;
-	hoverStop.angular.z=0.0;
+    hoverStop.angular.y=0.0;
+    hoverStop.angular.z=0.0;
 
     hoverUp.linear.x=0.0;
-	hoverUp.linear.y=0.0;
-	hoverUp.linear.z=0.1;
-	hoverUp.angular.z=0.0;
-
-	hoverDown.linear.x=0.0;
-	hoverDown.linear.y=0.0;
-	hoverDown.linear.z=-0.1;
-	hoverDown.angular.z=0.0;
-
-	trackLeft.linear.x=0.0;
+    hoverUp.linear.y=0.0;
+    hoverUp.linear.z=0.1;
+    hoverUp.angular.z=0.0;
+    
+    hoverDown.linear.x=0.0;
+    hoverDown.linear.y=0.0;
+    hoverDown.linear.z=-0.1;
+    hoverDown.angular.z=0.0;
+    
+    trackLeft.linear.x=0.0;
     trackLeft.linear.y=0.02; 
     trackLeft.linear.z=0.0;
-	trackLeft.angular.z=0.0;
-
-	trackRight.linear.x=0.0;
+    trackLeft.angular.z=0.0;
+    
+    trackRight.linear.x=0.0;
     trackRight.linear.y=-0.02;
     trackRight.linear.z=0.0;
-	trackRight.angular.z=0.0;
-
-	trackForward.linear.x=0.02;
-	trackForward.linear.y=0.0;
-	trackForward.linear.z=0.0;
-	trackForward.angular.z=0.0;
-
-	trackBackward.linear.x=-0.02;
-	trackBackward.linear.y=-0.0;
-	trackBackward.linear.z=0.0;
-	trackBackward.angular.z=0.0;
-
-	moveRight.linear.x=0.0;
-	moveRight.linear.y=-0.03;
-	moveRight.linear.z=0.0;
-	moveRight.angular.z=0.0;
-	
-	moveLeft.linear.x=0.0;
-	moveLeft.linear.y=0.03;
-	moveLeft.linear.z=0.0;
-	moveLeft.angular.z=0.0;
-
-	moveForward.linear.x=0.03; 
-	moveForward.linear.y=0.0;
-	moveForward.linear.z=0.0;
-	moveForward.angular.z=0.0;
-
-	moveBackward.linear.x=-0.03;
-	moveBackward.linear.y=0.0;
-	moveBackward.linear.z=0.0;
-	moveBackward.angular.z=0.0;
-
+    trackRight.angular.z=0.0;
+    
+    trackForward.linear.x=0.02;
+    trackForward.linear.y=0.0;
+    trackForward.linear.z=0.0;
+    trackForward.angular.z=0.0;
+    
+    trackBackward.linear.x=-0.02;
+    trackBackward.linear.y=-0.0;
+    trackBackward.linear.z=0.0;
+    trackBackward.angular.z=0.0;
+    
+    moveRight.linear.x=0.0;
+    moveRight.linear.y=-0.03;
+    moveRight.linear.z=0.0;
+    moveRight.angular.z=0.0;
+    
+    moveLeft.linear.x=0.0;
+    moveLeft.linear.y=0.03;
+    moveLeft.linear.z=0.0;
+    moveLeft.angular.z=0.0;
+    
+    moveForward.linear.x=0.03;
+    moveForward.linear.y=0.0;
+    moveForward.linear.z=0.0;
+    moveForward.angular.z=0.0;
+    
+    moveBackward.linear.x=-0.03;
+    moveBackward.linear.y=0.0;
+    moveBackward.linear.z=0.0;
+    moveBackward.angular.z=0.0;
     pub_twist         = node.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
     pub_empty_takeoff = node.advertise<std_msgs::Empty>("/ardrone/takeoff", 1);/* Message queue length is just 1 */
     pub_empty_land    = node.advertise<std_msgs::Empty>("/ardrone/land", -1);

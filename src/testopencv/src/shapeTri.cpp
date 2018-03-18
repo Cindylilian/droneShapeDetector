@@ -1,4 +1,4 @@
-#include <ros/ros.h>
+`#include <ros/ros.h>
 #include <sensor_msgs/image_encodings.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -485,15 +485,15 @@ int main(int argc, char **argv){
     cout<<"Ready to Fly!"<<endl;
     cout<<"Map keyboard:\n"
      <<"t = Take off\n"
-     	<<"a = Pilih Objek segitiga\n"
-     	<<"b = Pilih Objek kotak\n"
-     	<<"c = Pilih Objek penta\n"
+     	<<"3 = Pilih Objek segitiga\n"
+     	<<"4 = Pilih Objek kotak\n"
+     	<<"5 = Pilih Objek penta\n"
         <<"f = Up\n"
         <<"g = Down\n"
-        <<"1 = Maju\n"
-        <<"2 = Mundur\n"
-        <<"3 = Geser Kiri\n"
-        <<"4 = Geser Kanan\n"
+        <<"w = Maju\n"
+        <<"s = Mundur\n"
+        <<"a = Geser Kiri\n"
+        <<"d = Geser Kanan\n"
         <<"l = Landing\n"
         <<"space = Stop\n"
         <<"m = Battery\n"
@@ -536,17 +536,17 @@ while (ros::ok())
         	isMoving = true;
             command = '~';
             break;    
-        case 'a':
+        case '3':
         	cout<<"Objek segitiga akan dideteksi"<<endl;
 			nomerObjek = 3;
 			command = '~';
 			break;
-		case 'b':
+		case '4':
 			cout<<"Objek kotak akan dideteksi"<<endl;
 			nomerObjek = 4;
 			command = '~';
 			break;
-		case 'c':
+		case '5':
 			cout<<"Objek penta akan dideteksi";
 			nomerObjek = 5;
 			command = '~';
@@ -557,7 +557,7 @@ while (ros::ok())
             cout<<"Take Off"<<endl;
             command = '~';
             break;
-        case '1':
+        case 'w':
         	cout<<"Gerakan Maju"<<endl;
             otomatis = true;
 	            gerakan = "Maju";
@@ -565,7 +565,7 @@ while (ros::ok())
         		isTrack = false;
         		isMoving = true;
             break;  
-        case '2':
+        case 's':
         cout<<"Gerakan Mundur"<<endl;
             otomatis = true;
 	            gerakan = "Mundur";
@@ -573,7 +573,7 @@ while (ros::ok())
         		isTrack = false;
         		isMoving = true;
             break;    
-        case '3':
+        case 'a':
         cout<<"Gerakan Geser Kiri"<<endl;
             otomatis = true;
 	            gerakan = "Kiri";
@@ -581,7 +581,7 @@ while (ros::ok())
         		isTrack = false;
         		isMoving = true;
             break; 
-        case '4':
+        case 'd':
         cout<<"Gerakan Geser kanan"<<endl;
             otomatis = true;
 	            gerakan = "Kanan";
@@ -590,13 +590,13 @@ while (ros::ok())
         		isMoving = true;
         	command = '~';
             break;                   
-		case 'l':
-			pub_twist.publish(hoverStop); //drone is flat
-            pub_empty_land.publish(msg); //lands the drone
-            command = '~';
-            otomatis = false;
-            exit(0);
-            break;
+            case 'l':
+                pub_twist.publish(hoverStop); //drone is flat
+                pub_empty_land.publish(msg); //lands the drone
+                command = '~';
+                otomatis = false;
+                exit(0);
+                break;
         case ' ':
             cout<<"Stop"<<endl;
             pub_twist.publish(hoverStop);

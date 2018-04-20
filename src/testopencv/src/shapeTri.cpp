@@ -174,7 +174,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		{
             setLabel(dst, "RECT", contours[i]); //Kotak
 		}
-        else if (vtc >= 5 && && nomerObjek == 5)
+        else if (vtc >= 5 && nomerObjek == 5)
         {
             setLabel(dst, "PENTA", contours[i]); //Segilima
         }

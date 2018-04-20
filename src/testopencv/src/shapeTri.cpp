@@ -158,37 +158,27 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		// Skip small or non-convex objects 
 		if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
 			continue;
-
-		if (approx.size() == 3 && nomerObjek == 3)
+        
+        
+        // Number of vertices of polygonal curve
+        int vtc = approx.size();
+        
+        
+        // Use the number of vertices
+        // to determine the shape of the contour
+		if (vtc == 3 && nomerObjek == 3)
 		{
 			setLabel(dst, "TRI", contours[i]);    // Segitiga
 		}
-		else if (approx.size() >= 4 && approx.size() <= 6)
+		else if (vtc >= 4 && vtc <= 6)
 		{
-			// Number of vertices of polygonal curve
-			int vtc = approx.size();
-
-			// Get the cosines of all corners
-			std::vector<double> cos;
-			for (int j = 2; j < vtc+1; j++)
-				cos.push_back(angle(approx[j%vtc], approx[j-2], approx[j-1]));
-
-			// Sort ascending the cosine values
-			std::sort(cos.begin(), cos.end());
-
-			// Get the lowest and the highest cosine
-			double mincos = cos.front();
-			double maxcos = cos.back();
-
-			// Use the degrees obtained above and the number of vertices
-			// to determine the shape of the contour
 			if (vtc == 4 && nomerObjek == 4){
-				setLabel(dst, "RECT", contours[i]);
+				setLabel(dst, "RECT", contours[i]); //Kotak
 			}
 			else if (vtc == 5 && nomerObjek == 5){
-				setLabel(dst, "PENTA", contours[i]);
+				setLabel(dst, "PENTA", contours[i]); //Segilima
 			}else{
-				gotShape = false;
+				gotShape = false; //Objek tidak ditemukan
 				CoordShape.x = 999;
 				CoordShape.y = 999;
 				tipeObjek = "";
@@ -196,7 +186,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		}
 		else
 		{
-			gotShape = false;
+			gotShape = false; //Objek tidak ditemukan
 			CoordShape.x = 999;
 			CoordShape.y = 999;
 			tipeObjek = "";

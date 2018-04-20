@@ -170,20 +170,14 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		{
 			setLabel(dst, "TRI", contours[i]);    // Segitiga
 		}
-		else if (vtc >= 4 && vtc <= 6)
+		else if (vtc >= 4 && nomerObjek == 4)
 		{
-			if (vtc == 4 && nomerObjek == 4){
-				setLabel(dst, "RECT", contours[i]); //Kotak
-			}
-			else if (vtc == 5 && nomerObjek == 5){
-				setLabel(dst, "PENTA", contours[i]); //Segilima
-			}else{
-				gotShape = false; //Objek tidak ditemukan
-				CoordShape.x = 999;
-				CoordShape.y = 999;
-				tipeObjek = "";
-			}
+            setLabel(dst, "RECT", contours[i]); //Kotak
 		}
+        else if (vtc >= 5 && && nomerObjek == 5)
+        {
+            setLabel(dst, "PENTA", contours[i]); //Segilima
+        }
 		else
 		{
 			gotShape = false; //Objek tidak ditemukan

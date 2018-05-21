@@ -81,18 +81,6 @@ static const char WINDOW3[]="Black White Image";
 static const char WINDOW4[]="Grayscale Image";
 static const char WINDOW5[]="Blur";
 
-/**
- * Helper function to find a cosine of angle between vectors
- * from pt0->pt1 and pt0->pt2
- */
-static double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0)
-{
-	double dx1 = pt1.x - pt0.x;
-	double dy1 = pt1.y - pt0.y;
-	double dx2 = pt2.x - pt0.x;
-	double dy2 = pt2.y - pt0.y;
-	return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
-}
 
 /**
  * Helper function to display text in the center of a contour
@@ -472,8 +460,8 @@ int main(int argc, char **argv){
      	<<"3 = Pilih Objek segitiga\n"
      	<<"4 = Pilih Objek kotak\n"
      	<<"5 = Pilih Objek penta\n"
-        <<"f = Up\n"
-        <<"g = Down\n"
+        <<"u = Up\n"
+        <<"j = Down\n"
         <<"w = Maju\n"
         <<"s = Mundur\n"
         <<"a = Geser Kiri\n"
@@ -502,7 +490,7 @@ while (ros::ok())
         command=readch();
         switch(command)
         {
-        case 'f':
+        case 'u':
             cout<<"Altitude+"<<endl;
             otomatis = true;
 	        gerakan = "Naik";
@@ -511,7 +499,7 @@ while (ros::ok())
         	isMoving = true;
             command = '~';
             break;
-        case 'g':
+        case 'j':
             cout<<"Altitude-"<<endl;
             otomatis = true;
 	        gerakan = "Turun";

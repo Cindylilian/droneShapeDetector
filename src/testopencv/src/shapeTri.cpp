@@ -60,11 +60,6 @@ bool isLanding = false;
 bool isMoving = false;
 bool isTrack = false;
 
-float konturPersen;
-int waktu, waktuKiri, waktuKanan, waktuMajuKiri, waktuMajuKanan;
-int counterPuterKiri = 0;
-int counterPuterKanan = 0;
-int zigzagCounter;
 int nomerObjek;
 
 double koorXShape, koorYShape;

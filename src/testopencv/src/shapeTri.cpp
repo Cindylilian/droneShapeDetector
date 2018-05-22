@@ -514,7 +514,7 @@ while (ros::ok())
 			command = '~';
 			break;
 		case '5':
-			cout<<"Objek penta akan dideteksi";
+			cout<<"Objek penta akan dideteksi"<<endl;
 			nomerObjek = 5;
 			command = '~';
 			break;    

@@ -234,7 +234,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
                  char Areas[20];
                  sprintf(Areas,"Landing");
                  putText(dst,Areas,Point(10,40), FONT_HERSHEY_PLAIN, 1, Scalar(0,255,0),2);
-                 command = '5';
+                 command = '6';
                  isLanding = true;
                  isMoving = false;
              } else if (CoordShape.x>110 && CoordShape.x<220 && CoordShape.y >160 && CoordShape.y <240 ) {

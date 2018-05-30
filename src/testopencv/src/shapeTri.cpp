@@ -86,7 +86,7 @@ void setLabel(cv::Mat& im, const std::string label, std::vector<cv::Point>& cont
 	double scale = 0.4;
 	int thickness = 1;
 	int baseline = 0;
-
+    cout << std::fabs(cv::contourArea(contour));
 	cv::Size text = cv::getTextSize(label, fontface, scale, thickness, &baseline);
 	cv::Rect r = cv::boundingRect(contour);
 	gotShape = true;
@@ -139,7 +139,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true)*0.02, true);
 
 		// Skip small or non-convex objects 
-		if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
+		if (std::fabs(cv::contourArea(contours[i])) < 3000 || !cv::isContourConvex(approx))
 			continue;
         
         
@@ -152,6 +152,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		if (vtc == 3 && nomerObjek == 3)
 		{
 			setLabel(dst, "TRI", contours[i]);    // Segitiga
+            
 		}
 		else if (vtc >= 4 && nomerObjek == 4)
 		{

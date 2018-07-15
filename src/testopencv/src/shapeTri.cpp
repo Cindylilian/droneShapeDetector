@@ -139,7 +139,7 @@ void process(const sensor_msgs::ImageConstPtr& cam_image){
 		cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true)*0.02, true);
 
 		// Skip small or non-convex objects 
-		if (std::fabs(cv::contourArea(contours[i])) < 3000 || !cv::isContourConvex(approx))
+		if (std::fabs(cv::contourArea(contours[i])) < 1700 || !cv::isContourConvex(approx))
 			continue;
         
         

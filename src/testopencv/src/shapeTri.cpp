@@ -86,7 +86,6 @@ void setLabel(cv::Mat& im, const std::string label, std::vector<cv::Point>& cont
 	double scale = 0.4;
 	int thickness = 1;
 	int baseline = 0;
-    cout << std::fabs(cv::contourArea(contour));
 	cv::Size text = cv::getTextSize(label, fontface, scale, thickness, &baseline);
 	cv::Rect r = cv::boundingRect(contour);
 	gotShape = true;
